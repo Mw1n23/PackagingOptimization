@@ -1,14 +1,26 @@
-## 3D Bin Packing Visualization
+# 3D Bin Packing Visualization
 
-This Python script uses the `py3dbp` library to pack items into a storage unit and visualizes the result in a 3D plot using Matplotlib. The script simulates packing 100 battery items ("Akkus") into a storage unit and displays their arrangement with a color-coded legend.
+## Overview
+This project packs items into a bin using `py3dbp` and visualizes fitted items in 3D using Matplotlib.
 
-### Features
-- **Bin Packing**: Utilizes the `py3dbp` library to pack items into a defined storage unit (`Tiefkühler`).
-- **3D Visualization**: Renders a 3D plot of packed items with random colors for each item.
-- **Legend**: Includes a dynamic legend mapping item names to their respective colors.
-- **Output**: Prints details of fitted and unfitted items for analysis.
+## Setup
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
-### Output
-<img src="https://github.com/user-attachments/assets/f5c8bc16-b29e-4b18-8a03-0fa3e95fc181" alt="Result Packing Visualization" width="300">
+## Run
+```bash
+python bin_packing_visualizer.py
+```
 
+Example with custom dimensions:
+```bash
+python bin_packing_visualizer.py --bin-width 155 --bin-height 53.5 --bin-depth 58.5 --num-items 100
+```
 
+## Tests
+```bash
+pytest -q
+```
