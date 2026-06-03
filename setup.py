@@ -19,7 +19,7 @@ setup(
     packages=find_packages(include=["packaging_optimization", "packaging_optimization.*"]),
     include_package_data=True,
     install_requires=[
-        "py3dbp>=1.8.4",
+        "py3dbp>=1.1.2,<2",
     ],
     extras_require={
         "plot": [
