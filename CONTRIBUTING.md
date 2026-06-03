@@ -7,7 +7,7 @@ cd PackagingOptimization
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e .[plot]
+python -m pip install -e .[plot,dev]
 ```
 
 ## Local validation
@@ -16,6 +16,8 @@ Run the repository gate before opening a pull request:
 python -m unittest discover -s tests -q
 python -m packaging_optimization --help
 python bin_packing_visualizer.py --help
+python -m build
+python -m twine check dist/*
 ```
 
 ## Change scope

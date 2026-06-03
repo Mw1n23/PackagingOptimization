@@ -1,3 +1,56 @@
 [build-system]
-requires = ["setuptools>=59.6", "wheel"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "packaging-optimization"
+dynamic = ["version"]
+description = "Bin packing optimization and 3D visualization."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Mw1n23" }]
+keywords = ["bin-packing", "3d-visualization", "logistics", "optimization"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Visualization",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+  "py3dbp>=1.1.2,<2",
+]
+
+[project.optional-dependencies]
+plot = [
+  "matplotlib>=3.5.0",
+  "numpy>=1.21.0",
+]
+dev = [
+  "build>=1.2.1",
+  "pytest>=8",
+  "twine>=5.1.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/Mw1n23/PackagingOptimization"
+Source = "https://github.com/Mw1n23/PackagingOptimization"
+Issues = "https://github.com/Mw1n23/PackagingOptimization/issues"
+
+[project.scripts]
+packaging-optimization = "packaging_optimization.cli:main"
+bin-packing-visualizer = "packaging_optimization.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "packaging_optimization.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["packaging_optimization", "packaging_optimization.*"]

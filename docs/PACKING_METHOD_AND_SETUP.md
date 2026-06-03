@@ -18,6 +18,7 @@ The runtime entry point is `packaging_optimization.cli`.
 ### Key design choices
 - Import `py3dbp`, `matplotlib`, and `numpy` lazily.
   This allows `--help`, imports, tests, and packaging checks to work even when optional runtime dependencies are not installed yet.
+- Keep modern package metadata in `pyproject.toml` and preserve a compatible `setup.py` fallback for older build frontends.
 - Keep the legacy `bin_packing_visualizer.py` script as a compatibility wrapper.
 - Use deterministic colors for plotted items so repeated runs do not produce visually noisy screenshots.
 
@@ -40,7 +41,7 @@ cd PackagingOptimization
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e .[plot]
+python -m pip install -e .[plot,dev]
 ```
 
 ## CLI entry points
@@ -54,6 +55,8 @@ Run before pushing:
 python -m unittest discover -s tests -q
 python -m packaging_optimization --help
 python bin_packing_visualizer.py --help
+python -m build
+python -m twine check dist/*
 ```
 
 ## Limitations

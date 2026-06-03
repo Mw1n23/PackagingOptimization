@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from typing import Any
 
 
-logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 LOGGER = logging.getLogger(__name__)
 
 
@@ -42,6 +41,12 @@ class PackingSummary:
     unfitted_count: int
     fitted_names: list[str]
     unfitted_names: list[str]
+
+
+def configure_logging() -> None:
+    if logging.getLogger().handlers:
+        return
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -285,6 +290,7 @@ def run(config: PackingConfig) -> PackingSummary:
 
 def main(argv: list[str] | None = None) -> int:
     try:
+        configure_logging()
         config = parse_arguments(argv)
         run(config)
     except Exception as exc:

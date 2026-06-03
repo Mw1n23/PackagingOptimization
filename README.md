@@ -8,8 +8,9 @@ This project packs items into a bin using `py3dbp` and visualizes fitted items i
 It has been refactored from a single script into an installable package with:
 - package and CLI entry points,
 - dependency-safe `--help` behavior,
+- modern `pyproject.toml` metadata with a compatibility fallback in `setup.py`,
 - repository docs and contributor guidance,
-- CI and local test gates.
+- CI, build validation, and local test gates.
 
 Technical notes and repository setup details are documented in `docs/PACKING_METHOD_AND_SETUP.md`.
 
@@ -38,7 +39,7 @@ cd PackagingOptimization
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e .[plot]
+python -m pip install -e .[plot,dev]
 ```
 
 ## Run
@@ -67,7 +68,14 @@ packaging-optimization --bin-width 155 --bin-height 53.5 --bin-depth 58.5 --num-
 python -m unittest discover -s tests -q
 ```
 
+## Build validation
+```bash
+python -m build
+python -m twine check dist/*
+```
+
 ## GitHub workflow
-- CI runs on push and pull request.
+- CI runs on push and pull request across Python 3.10, 3.11, and 3.12.
+- A separate build job validates wheel and sdist metadata.
 - `CONTRIBUTING.md` defines the local gate.
 - `CHANGELOG.md` tracks user-visible repository changes.
