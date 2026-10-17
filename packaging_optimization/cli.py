@@ -74,15 +74,18 @@ def build_parser() -> argparse.ArgumentParser:
 
 def parse_arguments(argv: list[str] | None = None) -> PackingConfig:
     args = build_parser().parse_args(argv)
-    validate_positive(args.bin_width, "bin-width")
-    validate_positive(args.bin_height, "bin-height")
-    validate_positive(args.bin_depth, "bin-depth")
-    validate_positive(args.bin_weight, "bin-weight")
-    validate_positive(args.item_width, "item-width")
-    validate_positive(args.item_height, "item-height")
-    validate_positive(args.item_depth, "item-depth")
-    validate_positive(args.item_weight, "item-weight")
-    validate_positive_integer(args.num_items, "num-items")
+    for field_name in (
+        "bin_width",
+        "bin_height",
+        "bin_depth",
+        "bin_weight",
+        "item_width",
+        "item_height",
+        "item_depth",
+        "item_weight",
+        "num_items",
+    ):
+        validate_positive(getattr(args, field_name), field_name.replace("_", "-"))
 
     return PackingConfig(
         bin_spec=BinSpec(
@@ -104,11 +107,6 @@ def parse_arguments(argv: list[str] | None = None) -> PackingConfig:
 
 
 def validate_positive(value: float, field_name: str) -> None:
-    if value <= 0:
-        raise ValueError(f"{field_name} must be greater than zero.")
-
-
-def validate_positive_integer(value: int, field_name: str) -> None:
     if value <= 0:
         raise ValueError(f"{field_name} must be greater than zero.")
 
@@ -255,7 +253,8 @@ def visualize_packing(bin_obj: Any) -> None:
             ncol=5,
         )
 
-    max_dim = max(bin_obj.width, bin_obj.height, bin_obj.depth) * 1.1
+    # py3dbp stores dimensions as Decimal after packing.
+    max_dim = float(max(bin_obj.width, bin_obj.height, bin_obj.depth)) * 1.1
     axis.set_xlim([0, max_dim])
     axis.set_ylim([0, max_dim])
     axis.set_zlim([0, max_dim])
@@ -289,11 +288,11 @@ def run(config: PackingConfig) -> PackingSummary:
 
 
 def main(argv: list[str] | None = None) -> int:
+    configure_logging()
     try:
-        configure_logging()
-        config = parse_arguments(argv)
-        run(config)
-    except Exception as exc:
+        run(parse_arguments(argv))
+    except (ValueError, RuntimeError) as exc:
+        # Invalid arguments and missing dependencies; anything else keeps its traceback.
         LOGGER.error("Program failed: %s", exc)
         return 1
     return 0

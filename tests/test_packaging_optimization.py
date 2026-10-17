@@ -1,3 +1,4 @@
+import importlib.util
 import subprocess
 import sys
 import unittest
@@ -145,6 +146,38 @@ class PackagingOptimizationTests(unittest.TestCase):
         self.assertEqual(summary.bin_name, "TestBin")
         self.assertEqual(summary.fitted_count, 2)
         self.assertEqual(summary.unfitted_count, 1)
+
+    def test_unexpected_errors_keep_their_traceback(self) -> None:
+        with mock.patch.object(cli, "run", side_effect=TypeError("bug")):
+            with self.assertRaises(TypeError):
+                cli.main(["--no-plot"])
+
+    def test_invalid_argument_returns_error(self) -> None:
+        with mock.patch.object(cli.LOGGER, "error") as log_error:
+            exit_code = cli.main(["--num-items", "0", "--no-plot"])
+
+        self.assertEqual(exit_code, 1)
+        self.assertIn("num-items must be greater than zero.", str(log_error.call_args))
+
+
+@unittest.skipUnless(
+    importlib.util.find_spec("py3dbp") and importlib.util.find_spec("matplotlib"),
+    "py3dbp and matplotlib are not installed",
+)
+class RealBackendTests(unittest.TestCase):
+    def test_default_run_packs_and_draws(self) -> None:
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        with mock.patch.object(plt, "show"), mock.patch.object(cli.LOGGER, "info"):
+            exit_code = cli.main([])
+            summary = cli.run(cli.parse_arguments(["--no-plot"]))
+        plt.close("all")
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual((summary.fitted_count, summary.unfitted_count), (86, 14))
 
 
 if __name__ == "__main__":
